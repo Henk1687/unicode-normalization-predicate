@@ -24,3 +24,10 @@ The trade-off: each check delegates to `unicodedata.normalize`, so it pays for a
 ## Awkward edge
 
 A string may satisfy several forms at once — `list(which_forms(s))` yields the *names* of every satisfied form, not a single winner. Pure ASCII returns all four. Conversely, a precomposed compatibility character (e.g. `U+FF21` FULLWIDTH LATIN CAPITAL LETTER A) is `NFKC`/`NFKD` but not `NFC`/`NFD`. Do not assume the four booleans collapse to one choice.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
